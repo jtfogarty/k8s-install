@@ -43,16 +43,16 @@ apt-get install -y \
 apt-get install -y docker-ce=5:19.03.8~3-0~ubuntu-bionic docker-ce-cli=5:19.03.8~3-0~ubuntu-bionic containerd.io
 
 # Set up the Docker daemon
-cat > /etc/docker/daemon.json <<EOF
-{
-  "exec-opts": ["native.cgroupdriver=systemd"],
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "100m"
-  },
-  "storage-driver": "overlay2"
-}
-EOF
+#cat > /etc/docker/daemon.json <<EOF
+# {
+#  "exec-opts": ["native.cgroupdriver=systemd"],
+#  "log-driver": "json-file",
+#  "log-opts": {
+#    "max-size": "100m"
+#  },
+#  "storage-driver": "overlay2"
+#}
+#EOF
 
 mkdir -p /etc/systemd/system/docker.service.d
 
@@ -62,14 +62,19 @@ systemctl start docker
 systemctl status docker
 docker version
 
-apt-get install -y kubelet=1.15.7-00 kubeadm=1.15.7-00 kubectl=1.15.7-00
+apt-get install -y kubelet=1.16.12-00 kubeadm=1.16.12-00 kubectl=1.16.12-00
 
 systemctl daemon-reload
 systemctl enable kubelet
 systemctl start kubelet
 systemctl status kubelet
 
-kubeadm init --pod-network-cidr=10.41.0.0/16 --ignore-preflight-errors=all --kubernetes-version=1.15.11
+#kubeadm init --pod-network-cidr=10.41.0.0/16 --ignore-preflight-errors=all --kubernetes-version=1.16.12
+
+kubeadm join 10.10.100.10:6443 --token qgwy9j.oiejg71yws1bdqch \
+    --discovery-token-ca-cert-hash sha256:d4a0a60ae1759ab9f0294702a2e27fdee7d334293315af366900e730e39cabc6
+
+exit
 
 echo "sleeping 10 seconds"
 sleep 10
